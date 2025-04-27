@@ -140,6 +140,7 @@ button {
   height: 100vh;
   padding-right: var(--spacing-sm);
   padding-bottom: var(--spacing-sm);
+  overflow: hidden;
 }
 
 .calculator {
@@ -190,6 +191,10 @@ button {
   border: unset;
   font-weight: 500;
   font-size: var(--font-size-3xl);
+}
+
+.button:hover {
+  cursor: pointer;
 }
 
 .btn-primary {

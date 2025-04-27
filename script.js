@@ -1,0 +1,38 @@
+// Creating GSAP Animations
+
+function entranceAnimations() {
+    const timeline = gsap.timeline({defaults: {duration: 0.5}, ease: 'back.out(2)'});
+
+    timeline
+        .from('.calculator', {y: '100%', x: '-50%', rotate: '10%', opacity: 0})
+        .from('.button', {y: '100%', rotate: '5%', opacity: 0, stagger: 0.05})
+        .from('.answer-text', {y: '100%', opacity: 0}, '<0.5')
+}
+
+// btn hover effects
+gsap.utils.toArray('.button').forEach(button => {
+    const hoverIn = gsap.to(button, {
+        scale: 1.07,
+        paused: true,
+        textShadow: '2px 2px 0px #2eeaa8',
+        duration: 0.3
+    });
+
+    // Click animation
+    const clickDown = gsap.to(button, {
+        scale: 0.95, // Scale down on click
+        duration: 0.1,
+        paused: true
+    });
+
+    // Add event listeners
+    button.addEventListener('mouseenter', () => hoverIn.play());
+    button.addEventListener('mouseleave', () => hoverIn.reverse());
+    
+    // Click events
+    button.addEventListener('mousedown', () => clickDown.play());
+    button.addEventListener('mouseup', () => clickDown.reverse());
+    button.addEventListener('mouseleave', () => clickDown.reverse()); // In case mouse leaves while button is pressed
+});
+
+entranceAnimations();
