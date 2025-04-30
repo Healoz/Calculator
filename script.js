@@ -23,6 +23,9 @@ function buttonSelected(button) {
         if (answerBlank()) {
             answerText.textContent = buttonVal;
         }
+        else if (lastSelectedWasPercent()) { // if last value was a percent, add a multiply then the number
+            answerText.textContent = answerText.textContent + 'x' + buttonVal;
+        }
         else {
             answerText.textContent = answerText.textContent + buttonVal;
         }
@@ -43,8 +46,45 @@ function buttonSelected(button) {
             answerText.textContent += buttonVal;
         }
     }
+
+    // if clear selected
+    if (isClear(buttonVal)) {
+        answerText.textContent = 0; // set answer screen to 0
+    }
+
+    // if delete button selected
+    if (isDelete(buttonVal)) {
+        if (answerText.textContent.length === 1) {
+            answerText.textContent = '0'; // if only 1 in length, make zero
+        }
+        else {
+            answerText.textContent = answerText.textContent.slice(0, -1);
+        }
+    }
+
+    if (isDecimal(buttonVal)) {
+        // if decimal already exists in current number
+        const currentNumber = getCurrentNumber();
+
+        if (currentNumber.includes('.')) { // if the current number already has a decimal, do nothing
+            return;
+        }
+        answerText.textContent += buttonVal; // add decimal to end of answerText
+    }
+
+    if (isPercent(buttonVal)) {
+        // if last val was operation, replace operation
+        if (lastSelectedWasOperation()) {
+            answerText.textContent = answerText.textContent.slice(0, -1) + buttonVal;
+        }
+        else {
+            answerText.textContent = answerText.textContent + buttonVal; // otherwise, simply add percent at the end
+        }
+    }
     
 }
+
+
 
 // Conditional checkers
 
@@ -65,6 +105,11 @@ function lastSelectedWasOperation() {
     return isOperation(lastChar); // checking if the last selected button was an operation
 }
 
+function lastSelectedWasPercent() {
+    const lastChar = answerText.textContent[answerText.textContent.length - 1];
+    return isPercent(lastChar); // checking if the last selected button was a percent
+}
+
 function isClear(btnValue) {
     return btnValue === 'C';
 }
@@ -79,6 +124,21 @@ function isEquals(btnValue) {
 
 function isDecimal(btnValue) {
     return btnValue === '.';
+}
+
+function isPercent(btnValue) {
+    return btnValue === '%';
+}
+
+// helper functions
+function getCurrentNumber() {
+    const answerTextContent = answerText.textContent;
+    for (let i = answerTextContent.length - 1; i >= 0; i--) {
+        if (operations.includes(answerTextContent[i])) {
+            return answerTextContent.substring(i + 1);
+        }
+    }
+    return answerTextContent; // if no operation found, just return the whole answer
 }
 
 
