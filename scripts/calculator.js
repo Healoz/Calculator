@@ -38,7 +38,12 @@ function lastSelectedWasPercent(answerText) {
 }
 
 function isNumber(btnValue) {
-    return !isNaN(parseInt(btnValue));
+    for (let i = 0; i < btnValue.length; i++) {
+        if (isNaN(parseInt(btnValue[i]))) {
+            return false;
+        }
+    }
+    return true;
 }
 
 function isOperation(btnValue) {
@@ -64,3 +69,18 @@ function isDecimal(btnValue) {
 function isPercent(btnValue) {
     return btnValue === '%';
 }
+
+module.exports = {
+    isNumber,
+    isOperation,
+    isClear,
+    isDelete,
+    isEquals,
+    isDecimal,
+    isPercent,
+    getCurrentNumber,
+    handlePercentage,
+    handleDecimals,
+    lastSelectedWasOperation,
+    lastSelectedWasPercent
+  };
