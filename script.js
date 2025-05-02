@@ -2,6 +2,7 @@ const answerText = document.querySelector(".answer-text");
 const calculationText = document.querySelector(".calculation");
 const buttons = document.querySelectorAll(".button");
 const operations = ['÷', 'x', '-', '+'];
+let answerJustSubmitted = false;
 
 // <---------- Calculator Logic -------------------->
 
@@ -19,8 +20,8 @@ function buttonSelected(button) {
  
     // if user selects a number
     if (isNumber(buttonVal)) {
-        // if blank, replace the answer with the number selected
-        if (answerBlank()) {
+        // if blank or answer just submitted, replace the answer with the number selected
+        if (answerBlank() || answerJustSubmitted) {
             answerText.textContent = buttonVal;
         }
         else if (lastSelectedWasPercent()) { // if last value was a percent, add a multiply then the number
@@ -74,12 +75,40 @@ function buttonSelected(button) {
 
     if (isPercent(buttonVal)) {
         // if last val was operation, replace operation
-        if (lastSelectedWasOperation()) {
-            answerText.textContent = answerText.textContent.slice(0, -1) + buttonVal;
+        if (lastSelectedWasOperation() || lastSelectedWasPercent()) {
+            answerText.textContent = answerText.textContent.slice(0, -1) + buttonVal; // FIXME: Fix bug where last operation was number and it creates 2 percents in a row
         }
         else {
             answerText.textContent = answerText.textContent + buttonVal; // otherwise, simply add percent at the end
         }
+    }
+
+    if (isEquals(buttonVal)) {
+        // Replace 'x' with '*' for multiplication since JavaScript uses '*'
+        // Replace '÷' with '/' for division since JavaScript uses '/'
+        const rawExpression = answerText.textContent;
+        const expression = handlePercentage(rawExpression) // more complex functionality for percent
+        const jsExpression = expression.replace(/x/g, '*').replace(/÷/g, '/');
+        console.log(jsExpression);
+        let answer;
+        
+        try {
+            answer = eval(jsExpression);
+            answer = handleDecimals(answer); // round to 3 decimal places if needed
+            // if answer was successful
+            if (answer !== undefined) {
+                answerText.textContent = answer; // put the answer in the answer text
+                calculationText.textContent = rawExpression + ' ='; // put expression at the top
+                answerJustSubmitted = true; // if user next inputs any numbers, overwrite
+            }
+        } catch (error) {
+            console.error("Invalid expression:", error);
+        }
+
+    }
+    else {
+        // once a user presses any button, change answerJustSubmitted to false
+        answerJustSubmitted = false;
     }
     
 }
@@ -139,6 +168,22 @@ function getCurrentNumber() {
         }
     }
     return answerTextContent; // if no operation found, just return the whole answer
+}
+
+function handlePercentage(expression) {
+    // This is a simplified example - you might need more sophisticated parsing
+    // Converts percentages to decimal form (e.g., "50%" becomes "0.5")
+    return expression.replace(/(\d+)%/g, function(match, number) {
+    return number / 100;
+  });
+}
+
+function handleDecimals(answer) {
+    const answerString = answer.toString();
+    if (answerString.includes('.') && answerString.split('.')[1].length > 3) {
+        return parseFloat(answer.toFixed(3));
+    }
+    return answer; // return original number if it doesnt need formatting
 }
 
 
