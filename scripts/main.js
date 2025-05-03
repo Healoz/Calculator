@@ -17,7 +17,6 @@ function onStart() {
 
 function buttonSelected(button) {
     const buttonVal = button.textContent;
- 
     // if user selects a number
     if (isNumber(buttonVal)) {
         numberSelected(buttonVal);
@@ -147,4 +146,6 @@ function answerBlank() { // checks if answer is empty
 }
 
 onStart();
+
+
 

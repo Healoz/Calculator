@@ -34,4 +34,15 @@ function createAnimations() {
         button.addEventListener('mouseleave', () => clickDown.reverse()); // In case mouse leaves while button is pressed
     });
 }
+
+function animateTextChange(element, newText) {
+    const prevText = element.textContent; // the text before the change
+    if (prevText === newText) {
+        return; // if text is the same, dont animate
+    }
+
+    const timeline = gsap.timeline({defaults: {duration: 0.5}, ease: 'back.out(1)'});
+    element.textContent = newText;
+}
+
 createAnimations();
