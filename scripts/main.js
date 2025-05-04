@@ -7,8 +7,9 @@ let answerJustSubmitted = false;
 // <---------- Calculator Logic -------------------->
 
 function onStart() {
-    answerText.textContent = '0';
-    calculationText.textContent = null;
+    setTextWithAnimation(answerText, '0');
+
+    setTextWithAnimation(calculationText, null);
 
     buttons.forEach(button => {
         button.addEventListener('mousedown', () => buttonSelected(button));
@@ -58,42 +59,43 @@ function buttonSelected(button) {
 // value selected
 function numberSelected(buttonVal) {
     // if blank or answer just submitted, replace the answer with the number selected
-    if (answerBlank() || answerJustSubmitted) {
-        answerText.textContent = buttonVal;
+    if (answerBlank(answerText.textContent) || answerJustSubmitted) {
+        setTextWithAnimation(answerText, buttonVal);
     }
     else if (lastSelectedWasPercent(answerText.textContent)) { // if last value was a percent, add a multiply then the number
-        answerText.textContent = answerText.textContent + 'x' + buttonVal;
+        setTextWithAnimation(answerText, answerText.textContent + 'x' + buttonVal);
     }
     else {
-        answerText.textContent = answerText.textContent + buttonVal;
+        setTextWithAnimation(answerText, answerText.textContent + buttonVal);
     }
 }
 
 function operandSelected(buttonVal) {
     // if blank, move the current answer to the calculation text
-    if (answerBlank()) {
-        calculationText.textContent = "Ans = 0";
+    if (answerBlank(answerText.textContent)) {
+        setTextWithAnimation(calculationText, "Ans = 0");
     }
 
     if (lastSelectedWasOperation(answerText.textContent)) { // replace the last operation with the new operation selected
-        answerText.textContent = answerText.textContent.slice(0, -1) + buttonVal;
+        setTextWithAnimation(answerText, answerText.textContent.slice(0, -1) + buttonVal)
     }
     else {
         // if not preceeded by an operation, just add the operation to the end of the answer text
-        answerText.textContent += buttonVal;
+        // answerText.textContent += buttonVal;
+        setTextWithAnimation(answerText, answerText.textContent + buttonVal);
     }
 }
 
 function clearSelected() {
-    answerText.textContent = 0; // set answer screen to 0
+    setTextWithAnimation(answerText, '0'); // set answer screen to 0
 }
 
 function deleteSelected() {
     if (answerText.textContent.length === 1) {
-        answerText.textContent = '0'; // if only 1 in length, make zero
+        setTextWithAnimation(answerText, '0'); // if only 1 in length, make zero
     }
     else {
-        answerText.textContent = answerText.textContent.slice(0, -1);
+        setTextWithAnimation(answerText, answerText.textContent.slice(0, -1));
     }
 }
 
@@ -104,16 +106,17 @@ function decimalSelected(buttonVal) {
     if (currentNumber.includes('.')) { // if the current number already has a decimal, do nothing
         return;
     }
-    answerText.textContent += buttonVal; // add decimal to end of answerText
+    // answerText.textContent += buttonVal; 
+    setTextWithAnimation(answerText, answerText.textContent += buttonVal); // add decimal to end of answerText
 }
 
 function percentSelected(buttonVal) {
     // if last val was operation, replace operation
-    if (lastSelectedWasOperation(answerText.textContent) || lastSelectedWasPercent(answerText.textContent)) {
-        answerText.textContent = answerText.textContent.slice(0, -1) + buttonVal; // FIXME: Fix bug where last operation was number and it creates 2 percents in a row
+    if (lastSelectedWasOperation(answerText.textContent) || lastSelectedWasPercent(answerText.textContent)) { 
+        setTextWithAnimation(answerText, answerText.textContent.slice(0, -1) + buttonVal); // FIXME: Fix bug where last operation was number and it creates 2 percents in a row
     }
-    else {
-        answerText.textContent = answerText.textContent + buttonVal; // otherwise, simply add percent at the end
+    else { 
+        setTextWithAnimation(answerText, answerText.textContent + buttonVal); // otherwise, simply add percent at the end
     }
 }
 
@@ -131,18 +134,13 @@ function equalsSelected() {
         answer = handleDecimals(answer); // round to 3 decimal places if needed
         // if answer was successful
         if (answer !== undefined) {
-            answerText.textContent = answer; // put the answer in the answer text
-            calculationText.textContent = rawExpression + ' ='; // put expression at the top
+            setTextWithAnimation(answerText, answer); // put the answer in the answer text
+            setTextWithAnimation(calculationText, rawExpression + ' ='); // put expression at the top
             answerJustSubmitted = true; // if user next inputs any numbers, overwrite
         }
     } catch (error) {
         console.error("Invalid expression:", error);
     }
-}
-
-// Conditional checkers
-function answerBlank() { // checks if answer is empty
-    return answerText.textContent === "0";
 }
 
 onStart();

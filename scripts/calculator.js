@@ -46,6 +46,11 @@ function isNumber(btnValue) {
     return true;
 }
 
+// Conditional checkers
+function answerBlank(answerText) { // checks if answer is empty
+    return answerText === "0";
+}
+
 function isOperation(btnValue) {
    return operations.includes(btnValue);
 }
