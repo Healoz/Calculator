@@ -37,11 +37,39 @@ function createAnimations() {
 
 function setTextWithAnimation(element, newText) {
     const prevText = element.textContent; // the text before the change
-    if (prevText === newText || prevText === null) {
+    if (prevText === newText || prevText === null || newText === null) {
         return; // if text is the same or null, dont animate
     }
 
+    // creating timeline
     const timeline = gsap.timeline({defaults: {duration: 0.5}, ease: 'back.out(1)'});
+
+    // Check what kind of change happened
+    if (prevText.length > newText.length) {
+        // If previous text is longer, characters were removed
+        const charsDifference = prevText.length - newText.length;
+        if (charsDifference > 1) {
+            console.log("multiple values removed:", charsDifference, "characters");
+        } else {
+            console.log("single value removed");
+        }
+    } else {
+        // If new text is longer, characters were added
+        const charsDifference = newText.length - prevText.length;
+        if (charsDifference > 1) {
+            console.log("multiple values added:", charsDifference, "characters");
+        } else {
+            console.log("single value added");
+            // create a new h2 element at the end
+            const newHeading = document.createElement("h2");
+            const headingContent = document.createTextNode("3");
+            newHeading.classList.add('new-answer-text', 'answer-text');
+            // animate it in using timeline
+            // on animation finish, remove the new element and add it to the main answer
+        }
+    }
+
+    
     element.textContent = newText;
 }
 

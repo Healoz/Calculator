@@ -9,7 +9,7 @@ let answerJustSubmitted = false;
 function onStart() {
     setTextWithAnimation(answerText, '0');
 
-    setTextWithAnimation(calculationText, null);
+    setTextWithAnimation(calculationText, '');
 
     buttons.forEach(button => {
         button.addEventListener('mousedown', () => buttonSelected(button));
