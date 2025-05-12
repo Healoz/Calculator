@@ -1,15 +1,29 @@
+// References to DOM
 const answerText = document.querySelector(".answer-text");
+const newAnswerTextClass = ".new-answer-text";
 const calculationText = document.querySelector(".calculation");
+const newCalculationTextClass = ".new-calculation";
 const buttons = document.querySelectorAll(".button");
+const answerContainer = document.querySelector(".answer-text-container");
+const calculationContainer = document.querySelector(".calculation-container");
 
 let answerJustSubmitted = false;
 
 // <---------- Calculator Logic -------------------->
 
 function onStart() {
-  setTextWithAnimation(answerText, "0");
+  // setTextWithAnimation(answerText, "0", answerContainer, newAnswerTextClass);
+  answerText.textContent = "0";
+  // set text without animation
 
-  setTextWithAnimation(calculationText, "");
+  // setTextWithAnimation(
+  //   calculationText,
+  //   "",
+  //   calculationContainer,
+  //   newCalculationTextClass
+  // );
+
+  calculationText.textContent = "";
 
   buttons.forEach((button) => {
     button.addEventListener("mousedown", () => buttonSelected(button));
@@ -58,12 +72,12 @@ function buttonSelected(button) {
 function numberSelected(buttonVal) {
   // if blank or answer just submitted, replace the answer with the number selected
   if (answerBlank(answerText.textContent) || answerJustSubmitted) {
-    setTextWithAnimation(answerText, buttonVal);
+    setTextWithAnimation("answer", buttonVal);
   } else if (lastSelectedWasPercent(answerText.textContent)) {
     // if last value was a percent, add a multiply then the number
-    setTextWithAnimation(answerText, answerText.textContent + "x" + buttonVal);
+    setTextWithAnimation("answer", answerText.textContent + "x" + buttonVal);
   } else {
-    setTextWithAnimation(answerText, answerText.textContent + buttonVal);
+    setTextWithAnimation("answer", answerText.textContent + buttonVal);
   }
 }
 

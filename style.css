@@ -173,11 +173,11 @@ button {
   font-size: var(--font-size-4xl);
   line-height: 3.5rem;
   text-shadow: 2px 2px 0px var(--color-secondary);
-  background-color: blue;
+  /* background-color: blue; */
 }
 
 .new-answer-text {
-  background-color: red;
+  /* background-color: red; */
 }
 
 .screen-text-container {
