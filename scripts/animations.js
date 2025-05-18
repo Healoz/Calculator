@@ -68,6 +68,8 @@ function setTextWithAnimation(targetConfig, newText) {
     return; // if text is the same or null, dont animate
   }
 
+  console.log("new text: " + newText);
+
   // creating timeline
   const timeline = gsap.timeline({
     defaults: { duration: 0.3 },
@@ -77,7 +79,14 @@ function setTextWithAnimation(targetConfig, newText) {
   // Check what kind of change happened
   if (prevText.length > newText.length) {
     // If previous text is longer, characters were removed
-    charsRemoved(prevText, newText, container, timeline, element);
+    charsRemoved(
+      element,
+      newText,
+      prevText,
+      container,
+      animationClass,
+      timeline
+    );
   } else {
     // If new text is longer, characters were added
     charsAdded(element, newText, prevText, container, animationClass, timeline);
@@ -92,6 +101,7 @@ function charsAdded(
   animationClass,
   timeline
 ) {
+  // console.log("new text: " + newText);
   const addedChars = newText.substring(prevText.length); // get the new char(s)
 
   // Create a new element of the same type as the input element
@@ -110,8 +120,6 @@ function charsAdded(
   // add only the added chars to this new element
   newElement.textContent = addedChars;
 
-  console.log(container);
-
   // append heading to the container
   container.appendChild(newElement);
 
@@ -128,13 +136,73 @@ function charsAdded(
   });
 }
 
-function charsRemoved(prevText, newText, container, timeline, element) {
-  const charsDifference = prevText.length - newText.length;
-  if (charsDifference > 1) {
-    console.log("multiple values removed:", charsDifference, "characters");
-  } else {
-    console.log("single value removed");
+function charsRemoved(
+  element,
+  newText,
+  prevText,
+  container,
+  animationClass,
+  timeline
+) {
+  // console.log(prevText);
+  // console.log(newText);
+
+  // get the removed char(s
+  const removedChars = getRemovedChars(newText, prevText);
+
+  // // create an element of the same type of
+  const tagName = element.tagName;
+  const newElement = document.createElement(tagName);
+
+  // Copy classes from the original element
+  const elementClasses = element.classList;
+  console.log(element.classList);
+  elementClasses.forEach((className) => {
+    newElement.classList.add(className);
+  });
+
+  // add the new class to distinguish this element
+  newElement.classList.add(animationClass);
+
+  // add only the removed chars to this new element
+  newElement.textContent = removedChars;
+
+  // append the new element to the container
+  container.appendChild(newElement);
+
+  // set the element text to the new text before animating
+  element.textContent = newText;
+
+  timeline.to("." + animationClass, {
+    y: "100%",
+    rotate: "10%",
+    opacity: 0,
+    onComplete: () => {
+      // on animation complete, remove new element
+      newElement.remove();
+    },
+  });
+}
+
+function getRemovedChars(newText, prevText) {
+  // if all text was removed, return an empty string
+  if (newText === "0" || newText === "") {
+    return prevText;
   }
+
+  let remainingChars = prevText;
+
+  // for each character in newText, remove its first occurence from remainingChars
+  for (const char of newText) {
+    const index = remainingChars.indexOf(char);
+    if (index !== -1) {
+      remainingChars =
+        remainingChars.substring(0, index) +
+        remainingChars.substring(index + 1);
+    }
+  }
+
+  return remainingChars;
 }
 
 createAnimations();

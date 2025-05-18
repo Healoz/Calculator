@@ -84,31 +84,31 @@ function numberSelected(buttonVal) {
 function operandSelected(buttonVal) {
   // if blank, move the current answer to the calculation text
   if (answerBlank(answerText.textContent)) {
-    setTextWithAnimation(calculationText, "Ans = 0");
+    setTextWithAnimation("answer", "Ans = 0");
   }
 
   if (lastSelectedWasOperation(answerText.textContent)) {
     // replace the last operation with the new operation selected
     setTextWithAnimation(
-      answerText,
+      "answer",
       answerText.textContent.slice(0, -1) + buttonVal
     );
   } else {
     // if not preceeded by an operation, just add the operation to the end of the answer text
     // answerText.textContent += buttonVal;
-    setTextWithAnimation(answerText, answerText.textContent + buttonVal);
+    setTextWithAnimation("answer", answerText.textContent + buttonVal);
   }
 }
 
 function clearSelected() {
-  setTextWithAnimation(answerText, "0"); // set answer screen to 0
+  setTextWithAnimation("answer", "0"); // set answer screen to 0
 }
 
 function deleteSelected() {
   if (answerText.textContent.length === 1) {
-    setTextWithAnimation(answerText, "0"); // if only 1 in length, make zero
+    setTextWithAnimation("answer", "0"); // if only 1 in length, make zero
   } else {
-    setTextWithAnimation(answerText, answerText.textContent.slice(0, -1));
+    setTextWithAnimation("answer", answerText.textContent.slice(0, -1));
   }
 }
 
@@ -121,7 +121,7 @@ function decimalSelected(buttonVal) {
     return;
   }
   // answerText.textContent += buttonVal;
-  setTextWithAnimation(answerText, (answerText.textContent += buttonVal)); // add decimal to end of answerText
+  setTextWithAnimation("answer", (answerText.textContent += buttonVal)); // add decimal to end of answerText
 }
 
 function percentSelected(buttonVal) {
@@ -131,11 +131,11 @@ function percentSelected(buttonVal) {
     lastSelectedWasPercent(answerText.textContent)
   ) {
     setTextWithAnimation(
-      answerText,
+      "answer",
       answerText.textContent.slice(0, -1) + buttonVal
     ); // FIXME: Fix bug where last operation was number and it creates 2 percents in a row
   } else {
-    setTextWithAnimation(answerText, answerText.textContent + buttonVal); // otherwise, simply add percent at the end
+    setTextWithAnimation("answer", answerText.textContent + buttonVal); // otherwise, simply add percent at the end
   }
 }
 
@@ -153,8 +153,9 @@ function equalsSelected() {
     answer = handleDecimals(answer); // round to 3 decimal places if needed
     // if answer was successful
     if (answer !== undefined) {
-      setTextWithAnimation(answerText, answer); // put the answer in the answer text
-      setTextWithAnimation(calculationText, rawExpression + " ="); // put expression at the top
+      const answerString = answer.toString(); // ensure to convert value to a string
+      setTextWithAnimation("answer", answerString); // put the answer in the answer text
+      setTextWithAnimation("calculation", rawExpression + " ="); // put expression at the top
       answerJustSubmitted = true; // if user next inputs any numbers, overwrite
     }
   } catch (error) {
