@@ -13,6 +13,21 @@ const textAnimationConfigs = {
 
 // <---------- Creating GSAP Animations -------------------->
 function createAnimations() {
+  setUpCalculatorButtonAnimations();
+  backgroundAnimation();
+}
+
+function backgroundAnimation() {
+  const timeline = gsap.timeline({
+    repeat: -1,
+    yoyo: false,
+    defaults: { duration: 150 },
+  });
+
+  timeline.to(".calculator-icon-grid", { rotate: "360deg", ease: "none" });
+}
+
+function setUpCalculatorButtonAnimations() {
   const timeline = gsap.timeline({
     defaults: { duration: 0.5 },
     ease: "back.out(1)",
@@ -72,7 +87,7 @@ function setTextWithAnimation(targetConfig, newText) {
 
   // creating timeline
   const timeline = gsap.timeline({
-    defaults: { duration: 0.3 },
+    defaults: { duration: 0.2 },
     ease: "back.out(1)",
   });
 
@@ -120,8 +135,15 @@ function charsAdded(
   // add only the added chars to this new element
   newElement.textContent = addedChars;
 
+  // get the width of the new element
+  const newWidth = newElement.getBoundingClientRect().width;
+  // add class to old element to select it for animation
+  element.classList.add("slide");
+
   // append heading to the container
   container.appendChild(newElement);
+
+  console.log(elementClasses[0]);
 
   //   perform animation
   timeline.from("." + animationClass, {
@@ -132,6 +154,7 @@ function charsAdded(
       // on animation finish, remove the new element and add it to the main answer
       newElement.remove();
       element.textContent = newText;
+      element.classList.remove("slide");
     },
   });
 }
@@ -144,9 +167,6 @@ function charsRemoved(
   animationClass,
   timeline
 ) {
-  // console.log(prevText);
-  // console.log(newText);
-
   // get the removed char(s
   const removedChars = getRemovedChars(newText, prevText);
 
